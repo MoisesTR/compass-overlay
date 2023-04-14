@@ -60,7 +60,7 @@ const Camera: React.FC = () => {
           left: "90px",
           width: "250px",
           height: "250px",
-          backgroundImage: "url(./compass2.png)",
+          backgroundImage: "url(./compass3.png)",
           backgroundSize: "100% 100%",
           display: "flex",
           flexDirection: "column",
