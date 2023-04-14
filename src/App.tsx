@@ -21,7 +21,7 @@ const Camera: React.FC = () => {
 
   useEffect(() => {
     const handleCompass = (event: DeviceOrientationEvent) => {
-      if (compassRef.current) {
+      if (compassRef.current && event.alpha) {
         compassRef.current.style.transform = `rotate(${-event.alpha}deg)`;
         compassRef.current.querySelector(".degree")!.textContent = `${Math.round(event.alpha)}°`;
       }
