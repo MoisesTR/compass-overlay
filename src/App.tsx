@@ -56,11 +56,11 @@ const Camera: React.FC = () => {
         ref={compassRef}
         style={{
           position: "absolute",
-          top: "10px",
-          left: "10px",
-          width: "50px",
-          height: "50px",
-          backgroundImage: "url(./compass.png)",
+          top: "90px",
+          left: "90px",
+          width: "250px",
+          height: "250px",
+          backgroundImage: "url(./compass2.png)",
           backgroundSize: "100% 100%",
           display: "flex",
           flexDirection: "column",
