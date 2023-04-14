@@ -21,8 +21,9 @@ const Camera: React.FC = () => {
 
   useEffect(() => {
     const handleCompass = (event: DeviceOrientationEvent) => {
-      if (compassRef.current && event.alpha) {
+      if (compassRef.current) {
         compassRef.current.style.transform = `rotate(${-event.alpha}deg)`;
+        compassRef.current.querySelector(".degree")!.textContent = `${Math.round(event.alpha)}°`;
       }
     };
     window.addEventListener("deviceorientation", handleCompass);
@@ -59,15 +60,17 @@ const Camera: React.FC = () => {
           left: "10px",
           width: "50px",
           height: "50px",
-          backgroundColor: "rgba(255, 255, 255, 0.5)",
-          borderRadius: "50%",
+          backgroundImage: "url(./compass.png)",
+          backgroundSize: "100% 100%",
           display: "flex",
+          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
           boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.5)",
         }}
       >
-        <i className="fas fa-compass" style={{ fontSize: "24px" }} />
+        <div style={{ fontSize: "12px", fontWeight: "bold", marginBottom: "5px" }}>N</div>
+        <div className="degree" style={{ fontSize: "12px", fontWeight: "bold" }}></div>
       </div>
     </div>
   );
