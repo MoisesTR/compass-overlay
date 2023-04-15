@@ -2,9 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 
 const Camera: React.FC = () => {
   const [photoData, setPhotoData] = useState<string | null>(null);
+  const [compassHeading, setCompassHeading] = useState<number>(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const compassRef = useRef<HTMLDivElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     navigator.mediaDevices
@@ -21,13 +22,13 @@ const Camera: React.FC = () => {
 
   useEffect(() => {
     const handleCompass = (event: DeviceOrientationEvent) => {
-      if (compassRef.current && event.alpha) {
-        compassRef.current.style.transform = `rotate(${-event.alpha}deg)`;
-        compassRef.current.querySelector(".degree")!.textContent = `${Math.round(event.alpha)}°`;
-      }
+      setCompassHeading(event.alpha || 0);
     };
     window.addEventListener("deviceorientation", handleCompass);
-    return () => window.removeEventListener("deviceorientation", handleCompass);
+
+    return () => {
+      window.removeEventListener("deviceorientation", handleCompass);
+    };
   }, []);
 
   const takePhoto = () => {
@@ -44,6 +45,12 @@ const Camera: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (lineRef.current) {
+      lineRef.current.style.transform = `rotate(${compassHeading}deg)`;
+    }
+  }, [compassHeading]);
+
   return (
     <div style={{ position: "relative" }}>
       <video ref={videoRef} autoPlay />
@@ -53,11 +60,10 @@ const Camera: React.FC = () => {
       )}
       <button onClick={takePhoto}>Take Photo</button>
       <div
-        ref={compassRef}
         style={{
           position: "absolute",
-          top: "90px",
-          left: "90px",
+          top: "120px",
+          left: "120px",
           width: "250px",
           height: "250px",
           backgroundImage: "url(./compass3.png)",
@@ -70,7 +76,18 @@ const Camera: React.FC = () => {
         }}
       >
         <div style={{ fontSize: "12px", fontWeight: "bold", marginBottom: "5px" }}>N</div>
-        <div className="degree" style={{ fontSize: "12px", fontWeight: "bold" }}></div>
+        <div className="degree" style={{ fontSize: "12px", fontWeight: "bold" }}>{compassHeading}°</div>
+        <div
+          ref={lineRef}
+          style={{
+            position: "absolute",
+            width: "2px",
+            height: "30px",
+            backgroundColor: "red",
+            transform: `rotate(${compassHeading}deg)`,
+            transformOrigin: "top center",
+          }}
+        ></div>
       </div>
     </div>
   );
