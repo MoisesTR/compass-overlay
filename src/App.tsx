@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
 import CompassImage from './assets/compass.svg'; // Adjust the path if necessary
-import './App.css';
 
 const CompassCamera: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -41,16 +40,25 @@ const CompassCamera: React.FC = () => {
   }, []);
 
   return (
-    <div className="compass-camera">
-      <video className="video-background" ref={videoRef} autoPlay playsInline />
-      <div className="heading-display">
-        <span>Heading: {Math.round(heading)}°</span>
-      </div>
+    <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
+      <video
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+        ref={videoRef}
+        autoPlay
+        playsInline
+      />
       <img
         src={CompassImage}
         alt="Compass"
-        className="compass-image"
-        style={{ transform: `rotate(${360 - heading}deg)` }}
+        style={{
+          position: 'absolute',
+          bottom: 20,
+          left: '50%',
+          transform: `translateX(-50%) rotate(${360 - heading}deg)`,
+          width: 150,
+          height: 150,
+          zIndex: 2,
+        }}
       />
     </div>
   );
