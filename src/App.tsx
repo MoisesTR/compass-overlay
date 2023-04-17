@@ -75,8 +75,8 @@ const CompassCamera: React.FC = () => {
               top: '50%',
               left: '50%',
               transform: `translate(-50%, -50%) rotate(${heading}deg)`,
-              width: '60%',
-              height: '60%',
+              width: '40%',
+              height: '40%',
               zIndex: 3,
             }}
           />
