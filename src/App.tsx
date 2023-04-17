@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import CompassImage from './compass.svg'; // Adjust the path if necessary
 
 const CompassCamera: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -44,6 +45,12 @@ const CompassCamera: React.FC = () => {
       <div className="heading-display">
         <span>Heading: {Math.round(heading)}°</span>
       </div>
+      <img
+        src={CompassImage}
+        alt="Compass"
+        className="compass-image"
+        style={{ transform: `rotate(${360 - heading}deg)` }}
+      />
     </div>
   );
 };
