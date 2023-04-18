@@ -12,39 +12,39 @@ const CompassCamera: React.FC = () => {
     canvas.width = videoRef.current?.videoWidth || 0;
     canvas.height = videoRef.current?.videoHeight || 0;
     const ctx = canvas.getContext('2d');
-
-    // Draw the video frame
-    ctx?.drawImage(videoRef.current!, 0, 0, canvas.width, canvas.height);
-
-    // Draw the compass
-    const compass = new Image();
-    compass.src = CompassImage;
-    const compassSize = Math.min(canvas.width, canvas.height) * 0.3;
-    const compassX = (canvas.width - compassSize) / 2;
-    const compassY = (canvas.height - compassSize) / 2;
-    compass.onload = () => {
-      ctx?.drawImage(compass, compassX, compassY, compassSize, compassSize);
-
-      // Draw the arrow
-      const arrow = new Image();
-      arrow.src = ArrowImage;
-      const arrowSize = compassSize * 0.5;
-      const arrowX = (canvas.width - arrowSize) / 2;
-      const arrowY = (canvas.height - arrowSize) / 2;
-      arrow.onload = () => {
-        ctx?.save();
-        ctx?.translate(canvas.width / 2, canvas.height / 2);
-        ctx?.rotate((heading * Math.PI) / 180);
-        ctx?.translate(-canvas.width / 2, -canvas.height / 2);
-        ctx?.drawImage(arrow, arrowX, arrowY, arrowSize, arrowSize);
-        ctx?.restore();
-
-        // Draw the heading text
-        const headingText = `Heading: ${Math.round(heading)}°`;
-        const fontSize = 24;
-        const textX = canvas.width / 2;
-        const textY = (canvas.height - compassSize) / 2 - fontSize;
-        if (ctx) {
+  
+    if (ctx) {
+      // Draw the video frame
+      ctx.drawImage(videoRef.current!, 0, 0, canvas.width, canvas.height);
+  
+      // Draw the compass and arrow
+      const compass = new Image();
+      compass.src = CompassImage;
+      const compassSize = Math.min(canvas.width, canvas.height) * 0.3;
+      const compassX = (canvas.width - compassSize) / 2;
+      const compassY = (canvas.height - compassSize) / 2;
+      compass.onload = () => {
+        ctx.drawImage(compass, compassX, compassY, compassSize, compassSize);
+  
+        const arrow = new Image();
+        arrow.src = ArrowImage;
+        const arrowSize = compassSize * 0.5;
+        const arrowX = (canvas.width - arrowSize) / 2;
+        const arrowY = (canvas.height - arrowSize) / 2;
+        arrow.onload = () => {
+          // Rotate the canvas to adjust for device orientation and arrow orientation
+          const orientation = window.screen.orientation?.angle || 0;
+          ctx.translate(canvas.width / 2, canvas.height / 2);
+          ctx.rotate(((heading - orientation - 90) * Math.PI) / 180);
+          ctx.translate(-canvas.width / 2, -canvas.height / 2);
+  
+          ctx.drawImage(arrow, arrowX, arrowY, arrowSize, arrowSize);
+  
+          // Draw the heading text
+          const headingText = `Heading: ${Math.round(heading)}°`;
+          const fontSize = 24;
+          const textX = canvas.width / 2;
+          const textY = (canvas.height - compassSize) / 2 - fontSize;
           ctx.font = `${fontSize}px sans-serif`;
           ctx.textAlign = 'center';
           ctx.fillStyle = 'white';
@@ -52,19 +52,17 @@ const CompassCamera: React.FC = () => {
           ctx.lineWidth = 4;
           ctx.strokeText(headingText, textX, textY);
           ctx.fillText(headingText, textX, textY);
-        }
-
-        // Save the captured image
-        const imageData = canvas.toDataURL('image/jpeg');
-        const link = document.createElement('a');
-        link.href = imageData;
-        link.download = 'captured-image.jpg';
-        link.click();
+  
+          // Save the captured image
+          const imageData = canvas.toDataURL('image/jpeg');
+          const link = document.createElement('a');
+          link.href = imageData;
+          link.download = 'captured-image.jpg';
+          link.click();
+        };
       };
-    };
+    }
   };
-
-
 
   useEffect(() => {
     const startCamera = async () => {
