@@ -5,6 +5,20 @@ import ArrowImage from './assets/arrow.svg'; // Adjust the path if necessary
 const CompassCamera: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [heading, setHeading] = useState<number>(0);
+  const [zoom, setZoom] = useState<number>(1);
+
+  const captureImage = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = videoRef.current?.videoWidth || 0;
+    canvas.height = videoRef.current?.videoHeight || 0;
+    const ctx = canvas.getContext('2d');
+    ctx?.drawImage(videoRef.current!, 0, 0, canvas.width, canvas.height);
+    const imageData = canvas.toDataURL('image/jpeg');
+    const link = document.createElement('a');
+    link.href = imageData;
+    link.download = 'captured-image.jpg';
+    link.click();
+  };
 
   useEffect(() => {
     const startCamera = async () => {
@@ -40,10 +54,22 @@ const CompassCamera: React.FC = () => {
     };
   }, []);
 
+  const handleZoom = (delta: number) => {
+    setZoom(prevZoom => Math.max(1, Math.min(prevZoom + delta, 5)));
+  };
+
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
       <video
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          transform: `scale(${zoom})`,
+        }}
         ref={videoRef}
         autoPlay
         playsInline
@@ -75,13 +101,73 @@ const CompassCamera: React.FC = () => {
               top: '50%',
               left: '50%',
               transform: `translate(-50%, -50%) rotate(${heading}deg)`,
-              width: '40%',
-              height: '40%',
+              width: '50%',
+              height: '50%',
               zIndex: 3,
             }}
           />
         </div>
       </div>
+      <button
+        onClick={captureImage}
+        style={{
+          position: 'absolute',
+          bottom: '20px',
+          right: '20px',
+          zIndex: 4,
+          backgroundColor: '#444',
+          color: 'white',
+          borderRadius: '50%',
+          width: '50px',
+          height: '50px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          border: 'none',
+        }}
+      >
+        📷
+      </button>
+      <button
+        onClick={() => handleZoom(0.1)}
+        style={{
+          position: 'absolute',
+          bottom: '20px',
+          left: '20px',
+          zIndex: 4,
+          backgroundColor: '#444',
+          color: 'white',
+          borderRadius: '50%',
+          width: '50px',
+          height: '50px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          border: 'none',
+        }}
+      >
+        +
+      </button>
+      <button
+        onClick={() => handleZoom(-0.1)}
+        style={{
+          position: 'absolute',
+          bottom: '80px',
+          left: '20px',
+          zIndex: 4,
+          backgroundColor: '#444',
+          color: 'white',
+          borderRadius: '50%',
+          width: '50px',
+          height: '50px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          border: 'none',
+        }}
+      >
+        -
+      </button>
     </div>
   );
 };
