@@ -12,13 +12,43 @@ const CompassCamera: React.FC = () => {
     canvas.width = videoRef.current?.videoWidth || 0;
     canvas.height = videoRef.current?.videoHeight || 0;
     const ctx = canvas.getContext('2d');
+  
+    // Draw the video frame
     ctx?.drawImage(videoRef.current!, 0, 0, canvas.width, canvas.height);
-    const imageData = canvas.toDataURL('image/jpeg');
-    const link = document.createElement('a');
-    link.href = imageData;
-    link.download = 'captured-image.jpg';
-    link.click();
+  
+    // Draw the compass
+    const compass = new Image();
+    compass.src = CompassImage;
+    const compassSize = Math.min(canvas.width, canvas.height) * 0.3;
+    const compassX = (canvas.width - compassSize) / 2;
+    const compassY = (canvas.height - compassSize) / 2;
+    compass.onload = () => {
+      ctx?.drawImage(compass, compassX, compassY, compassSize, compassSize);
+  
+      // Draw the arrow
+      const arrow = new Image();
+      arrow.src = ArrowImage;
+      const arrowSize = compassSize * 0.5;
+      const arrowX = (canvas.width - arrowSize) / 2;
+      const arrowY = (canvas.height - arrowSize) / 2;
+      arrow.onload = () => {
+        ctx?.save();
+        ctx?.translate(canvas.width / 2, canvas.height / 2);
+        ctx?.rotate((heading * Math.PI) / 180);
+        ctx?.translate(-canvas.width / 2, -canvas.height / 2);
+        ctx?.drawImage(arrow, arrowX, arrowY, arrowSize, arrowSize);
+        ctx?.restore();
+  
+        // Save the captured image
+        const imageData = canvas.toDataURL('image/jpeg');
+        const link = document.createElement('a');
+        link.href = imageData;
+        link.download = 'captured-image.jpg';
+        link.click();
+      };
+    };
   };
+  
 
   useEffect(() => {
     const startCamera = async () => {
