@@ -130,8 +130,8 @@ const CompassCamera: React.FC = () => {
           color: 'white',
         }}
       >
-        <div style={{ fontSize: '24px', marginBottom: '8px' }}>Heading: {Math.round(heading)}°</div>
-        <div style={{ width: '150px', height: '150px', position: 'relative' }}>
+        <div style={{ fontSize: '24px', marginBottom: '8px' }}>Heading: {heading}°</div>
+        <div style={{ width: '400px', height: '400px', position: 'relative' }}>
           <img
             src={CompassImage}
             alt="Compass"
