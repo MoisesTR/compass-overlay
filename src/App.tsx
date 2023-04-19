@@ -6,6 +6,26 @@ const CompassCamera: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [heading, setHeading] = useState<number>(0);
   const [zoom, setZoom] = useState<number>(1);
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
+
+
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          setLatitude(position.coords.latitude);
+          setLongitude(position.coords.longitude);
+        },
+        error => {
+          console.error('Error getting location:', error);
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser');
+    }
+  };
+
 
   const getCardinalDirection = (angle: number) => {
     const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
@@ -18,11 +38,11 @@ const CompassCamera: React.FC = () => {
     canvas.width = videoRef.current?.videoWidth || 0;
     canvas.height = videoRef.current?.videoHeight || 0;
     const ctx = canvas.getContext('2d');
-  
+
     if (ctx) {
       // Draw the video frame
       ctx.drawImage(videoRef.current!, 0, 0, canvas.width, canvas.height);
-  
+
       // Draw the compass and arrow
       const compass = new Image();
       compass.src = CompassImage;
@@ -31,7 +51,7 @@ const CompassCamera: React.FC = () => {
       const compassY = (canvas.height - compassSize) / 2;
       compass.onload = () => {
         ctx.drawImage(compass, compassX, compassY, compassSize, compassSize);
-  
+
         const arrow = new Image();
         arrow.src = ArrowImage;
         const arrowSize = compassSize * 0.5;
@@ -43,9 +63,9 @@ const CompassCamera: React.FC = () => {
           ctx.translate(canvas.width / 2, canvas.height / 2);
           ctx.rotate(((heading - orientation - 90) * Math.PI) / 180);
           ctx.translate(-canvas.width / 2, -canvas.height / 2);
-  
+
           ctx.drawImage(arrow, arrowX, arrowY, arrowSize, arrowSize);
-  
+
           // Draw the heading text
           const headingText = `Heading: ${Math.round(heading)}° (${getCardinalDirection(heading)})`;
           const fontSize = 24;
@@ -58,7 +78,19 @@ const CompassCamera: React.FC = () => {
           ctx.lineWidth = 4;
           ctx.strokeText(headingText, textX, textY);
           ctx.fillText(headingText, textX, textY);
-  
+
+          // Draw the location text
+          const locationText = `Latitude: ${latitude?.toFixed(6) || 'N/A'}, Longitude: ${longitude?.toFixed(6) || 'N/A'}`;
+          const locationTextX = canvas.width / 2;
+          const locationTextY = (canvas.height - compassSize) / 2 - 2 * fontSize;
+          ctx.font = `${fontSize}px sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.fillStyle = 'white';
+          ctx.strokeStyle = 'black';
+          ctx.lineWidth = 4;
+          ctx.strokeText(locationText, locationTextX, locationTextY);
+          ctx.fillText(locationText, locationTextX, locationTextY);
+
           // Save the captured image
           const imageData = canvas.toDataURL('image/jpeg');
           const link = document.createElement('a');
@@ -69,7 +101,7 @@ const CompassCamera: React.FC = () => {
       };
     }
   };
-  
+
 
   useEffect(() => {
     const startCamera = async () => {
@@ -85,6 +117,7 @@ const CompassCamera: React.FC = () => {
       }
     };
     startCamera();
+    getLocation();
 
     const handleDeviceOrientation = (event: DeviceOrientationEvent) => {
       if (event.alpha !== null) {
@@ -139,6 +172,9 @@ const CompassCamera: React.FC = () => {
       >
         <div style={{ fontSize: '24px', marginBottom: '8px' }}>
           Heading: {Math.round(heading)}° ({getCardinalDirection(heading)})
+        </div>
+        <div style={{ fontSize: '24px', marginBottom: '8px' }}>
+          Latitude: {latitude?.toFixed(6) || 'N/A'}, Longitude: {longitude?.toFixed(6) || 'N/A'}
         </div>
         <div style={{ width: '150px', height: '150px', position: 'relative' }}>
           <img
