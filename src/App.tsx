@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import CompassImage from './assets/compass_2.svg';
+import CompassImage from './assets/compass.svg';
 import ArrowImage from './assets/arrow.svg';
 
 const CompassCamera: React.FC = () => {
@@ -131,7 +131,7 @@ const CompassCamera: React.FC = () => {
         }}
       >
         <div style={{ fontSize: '24px', marginBottom: '8px' }}>Heading: {Math.round(heading)}°</div>
-        <div style={{ width: '400px', height: '400px', position: 'relative' }}>
+        <div style={{ width: '150px', height: '150px', position: 'relative' }}>
           <img
             src={CompassImage}
             alt="Compass"
@@ -145,8 +145,8 @@ const CompassCamera: React.FC = () => {
               top: '50%',
               left: '50%',
               transform: `translate(-50%, -50%) rotate(${Math.round(heading)}deg)`,
-              width: '30%',
-              height: '30%',
+              width: '50%',
+              height: '50%',
               zIndex: 3,
             }}
           />
