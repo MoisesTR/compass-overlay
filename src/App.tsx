@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import CompassImage from './assets/compass_5.svg';
+import CompassImage from './assets/Windrose.svg';
 import ArrowImage from './assets/arrow.svg';
 
 const CompassCamera: React.FC = () => {
@@ -50,14 +50,6 @@ const CompassCamera: React.FC = () => {
       const compassX = (canvas.width - compassSize) / 2;
       const compassY = (canvas.height - compassSize) / 2;
       compass.onload = () => {
-        // Rotate the compass based on the heading angle
-        const orientation = window.screen.orientation?.angle || 0;
-        const compassAngle = (heading - orientation + 360) % 360;
-        const compassRadians = (compassAngle * Math.PI) / 180;
-        ctx.translate(compassX + compassSize / 2, compassY + compassSize / 2);
-        ctx.rotate(compassRadians);
-        ctx.translate(-compassX - compassSize / 2, -compassY - compassSize / 2);
-
         ctx.drawImage(compass, compassX, compassY, compassSize, compassSize);
 
         const arrow = new Image();
