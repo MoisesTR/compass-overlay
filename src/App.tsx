@@ -70,7 +70,7 @@ const CompassCamera: React.FC = () => {
   
           // Draw the heading and location text
           const headingText = `Heading: ${Math.round(heading)}° ${getCardinalDirection(heading)}`;
-          const locationText = `Location: ${location?.latitude.toFixed(4)}, ${location?.longitude.toFixed(4)}`;
+          const locationText = `Location: ${latitude?.toFixed(4)}, ${longitude?.toFixed(4)}`;
           const fontSize = 24;
           const textX = canvas.width / 2;
           const textY = (canvas.height - compassSize) / 2 - fontSize;
