@@ -185,8 +185,17 @@ const CompassCamera: React.FC = () => {
           <img
             src={CompassImage}
             alt="Compass"
-            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 2, transform: `translate(-50%, -50%) rotate(${Math.round(heading)}deg)` }}
+            style={{
+              position: 'absolute',
+              bottom: '20px',
+              left: '50%',
+              transform: `translateX(-50%) rotate(${heading}deg)`,
+              width: '150px',
+              height: '150px',
+              zIndex: 2,
+            }}
           />
+
           <img
             src={ArrowImage}
             alt="Arrow"
