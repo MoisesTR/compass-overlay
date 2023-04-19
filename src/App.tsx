@@ -7,6 +7,12 @@ const CompassCamera: React.FC = () => {
   const [heading, setHeading] = useState<number>(0);
   const [zoom, setZoom] = useState<number>(1);
 
+  const getCardinalDirection = (angle: number) => {
+    const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+    const index = Math.round(((angle %= 360) < 0 ? angle + 360 : angle) / 45) % 8;
+    return directions[index];
+  };
+
   const captureImage = () => {
     const canvas = document.createElement('canvas');
     canvas.width = videoRef.current?.videoWidth || 0;
@@ -41,7 +47,7 @@ const CompassCamera: React.FC = () => {
           ctx.drawImage(arrow, arrowX, arrowY, arrowSize, arrowSize);
   
           // Draw the heading text
-          const headingText = `Heading: ${Math.round(heading)}°`;
+          const headingText = `Heading: ${Math.round(heading)}° (${getCardinalDirection(heading)})`;
           const fontSize = 24;
           const textX = canvas.width / 2;
           const textY = (canvas.height - compassSize) / 2 - fontSize;
@@ -63,6 +69,7 @@ const CompassCamera: React.FC = () => {
       };
     }
   };
+  
 
   useEffect(() => {
     const startCamera = async () => {
@@ -130,7 +137,9 @@ const CompassCamera: React.FC = () => {
           color: 'white',
         }}
       >
-        <div style={{ fontSize: '24px', marginBottom: '8px' }}>Heading: {Math.round(heading)}°</div>
+        <div style={{ fontSize: '24px', marginBottom: '8px' }}>
+          Heading: {Math.round(heading)}° ({getCardinalDirection(heading)})
+        </div>
         <div style={{ width: '150px', height: '150px', position: 'relative' }}>
           <img
             src={CompassImage}
