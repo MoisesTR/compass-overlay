@@ -154,7 +154,7 @@ const CompassCamera: React.FC = () => {
         <div style={{ fontSize: '24px', marginBottom: '8px' }}>
           Latitude: {latitude?.toFixed(6) || 'N/A'}, Longitude: {longitude?.toFixed(6) || 'N/A'}
         </div>
-        <div style={{ width: '300px', height: '300px', position: 'relative' }}>
+        <div style={{ width: '350px', height: '350px', position: 'relative' }}>
           <img
             src={CompassImage}
             alt="Compass"
@@ -163,8 +163,8 @@ const CompassCamera: React.FC = () => {
               bottom: '20px',
               left: '50%',
               transform: `translateX(-50%) rotate(${heading}deg)`,
-              width: '150px',
-              height: '150px',
+              width: '350px',
+              height: '350px',
               zIndex: 2,
             }}
           />
