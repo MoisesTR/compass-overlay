@@ -58,23 +58,6 @@ const CompassCamera: React.FC = () => {
         ctx.rotate(compassRadians);
         ctx.translate(-compassX - compassSize / 2, -compassY - compassSize / 2);
         ctx.drawImage(compass, compassX, compassY, compassSize, compassSize);
-
-        // Draw the shape indicator
-        const shapeSize = compassSize / 8;
-        const shapeX = compassX + (compassSize - shapeSize) / 2;
-        const shapeY = compassY + shapeSize;
-        const shapeAngle = heading;
-        const shapeRadians = (shapeAngle * Math.PI) / 180;
-        ctx.translate(shapeX + shapeSize / 2, shapeY + shapeSize / 2);
-        ctx.rotate(shapeRadians);
-        ctx.translate(-shapeX - shapeSize / 2, -shapeY - shapeSize / 2);
-        ctx.beginPath();
-        ctx.moveTo(shapeX, shapeY);
-        ctx.lineTo(shapeX + shapeSize, shapeY);
-        ctx.lineTo(shapeX + shapeSize / 2, shapeY + shapeSize);
-        ctx.closePath();
-        ctx.fillStyle = 'red';
-        ctx.fill();
       };
     }
   };
