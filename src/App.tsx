@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import CompassImage from './assets/compass_4.svg';
+import CompassImage from './assets/compass_5.svg';
 import ArrowImage from './assets/arrow.svg';
 
 const CompassCamera: React.FC = () => {
