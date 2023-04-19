@@ -38,11 +38,11 @@ const CompassCamera: React.FC = () => {
     canvas.width = videoRef.current?.videoWidth || 0;
     canvas.height = videoRef.current?.videoHeight || 0;
     const ctx = canvas.getContext('2d');
-  
+
     if (ctx) {
       // Draw the video frame
       ctx.drawImage(videoRef.current!, 0, 0, canvas.width, canvas.height);
-  
+
       // Draw the compass and arrow
       const compass = new Image();
       compass.src = CompassImage;
@@ -51,24 +51,27 @@ const CompassCamera: React.FC = () => {
       const compassY = (canvas.height - compassSize) / 2;
       compass.onload = () => {
         ctx.drawImage(compass, compassX, compassY, compassSize, compassSize);
-  
+
         const arrow = new Image();
         arrow.src = ArrowImage;
         const arrowSize = compassSize * 0.5;
         const arrowX = (canvas.width - arrowSize) / 2;
         const arrowY = (canvas.height - arrowSize) / 2;
         arrow.onload = () => {
+          // Calculate the angle between the current heading and the initial arrow orientation
+          const initialArrowOrientation = 0; // Set this to the initial orientation of the arrow image
+          const angleOffset = initialArrowOrientation - heading;
+
           // Rotate the canvas to adjust for device orientation and arrow orientation
           const orientation = window.screen.orientation?.angle || 0;
-          ctx.save(); // save the canvas transformation state
           ctx.translate(canvas.width / 2, canvas.height / 2);
-          ctx.rotate(((heading - orientation - 90) * Math.PI) / 180);
+          ctx.rotate(((heading - orientation - 90 + angleOffset) * Math.PI) / 180);
           ctx.translate(-canvas.width / 2, -canvas.height / 2);
-  
+
           ctx.drawImage(arrow, arrowX, arrowY, arrowSize, arrowSize);
-  
+
           ctx.restore(); // restore the canvas transformation state
-  
+
           // Draw the heading text
           const headingText = `Heading: ${Math.round(heading)}°`;
           const fontSize = 24;
@@ -81,13 +84,13 @@ const CompassCamera: React.FC = () => {
           ctx.lineWidth = 4;
           ctx.strokeText(headingText, textX, textY);
           ctx.fillText(headingText, textX, textY);
-  
+
           // Draw the location text
           const locationText = `Lat: ${latitude?.toFixed(5)}, Lon: ${longitude?.toFixed(5)}`;
           const locationY = (canvas.height + compassSize) / 2 + fontSize * 2;
           ctx.strokeText(locationText, textX, locationY);
           ctx.fillText(locationText, textX, locationY);
-  
+
           // Save the captured image
           const imageData = canvas.toDataURL('image/jpeg');
           const link = document.createElement('a');
