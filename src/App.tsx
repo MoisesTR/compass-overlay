@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
 import CompassImage from './assets/Windrose.svg';
-import ArrowImage from './assets/arrow.svg';
 
 const CompassCamera: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -43,7 +42,7 @@ const CompassCamera: React.FC = () => {
       // Draw the video frame
       ctx.drawImage(videoRef.current!, 0, 0, canvas.width, canvas.height);
 
-      // Draw the compass and arrow
+      // Draw the compass
       const compass = new Image();
       compass.src = CompassImage;
       const compassSize = Math.min(canvas.width, canvas.height) * 0.3;
@@ -58,50 +57,6 @@ const CompassCamera: React.FC = () => {
         ctx.rotate(compassRadians);
         ctx.translate(-compassX - compassSize / 2, -compassY - compassSize / 2);
         ctx.drawImage(compass, compassX, compassY, compassSize, compassSize);
-
-        const arrow = new Image();
-        arrow.src = ArrowImage;
-        const arrowSize = compassSize * 0.5;
-        const arrowX = (canvas.width - arrowSize) / 2;
-        const arrowY = compassY + (compassSize - arrowSize) / 2;
-        arrow.onload = () => {
-          // Rotate the arrow based on the heading angle
-          const orientation = window.screen.orientation?.angle || 0;
-          const arrowAngle = (heading - orientation + 360) % 360;
-          const arrowRadians = (arrowAngle * Math.PI) / 180;
-          ctx.translate(arrowX + arrowSize / 2, arrowY + arrowSize / 2);
-          ctx.rotate(arrowRadians);
-          ctx.translate(-arrowX - arrowSize / 2, -arrowY - arrowSize / 2);
-
-          ctx.drawImage(arrow, arrowX, arrowY, arrowSize, arrowSize);
-
-          // Draw the heading and location text
-          const headingText = `Heading: ${Math.round(heading)}° ${getCardinalDirection(heading)}`;
-          const locationText = `Location: ${latitude?.toFixed(4)}, ${longitude?.toFixed(4)}`;
-          const fontSize = 24;
-          const textX = canvas.width / 2;
-          const textY = compassY - fontSize - 8;
-          const textAngle = orientation * Math.PI / 180;
-          ctx.translate(textX, textY);
-          ctx.rotate(textAngle);
-          ctx.translate(-textX, -textY);
-          ctx.font = `${fontSize}px sans-serif`;
-          ctx.textAlign = 'center';
-          ctx.fillStyle = 'white';
-          ctx.strokeStyle = 'black';
-          ctx.lineWidth = 4;
-          ctx.strokeText(headingText, textX, textY);
-          ctx.fillText(headingText, textX, textY);
-          ctx.strokeText(locationText, textX, textY + fontSize);
-          ctx.fillText(locationText, textX, textY + fontSize);
-
-          // Save the captured image
-          const imageData = canvas.toDataURL('image/jpeg');
-          const link = document.createElement('a');
-          link.href = imageData;
-          link.download = 'captured-image.jpg';
-          link.click();
-        };
       };
     }
   };
@@ -196,19 +151,6 @@ const CompassCamera: React.FC = () => {
             }}
           />
 
-          <img
-            src={ArrowImage}
-            alt="Arrow"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: `translate(-50%, -50%) rotate(${Math.round(heading)}deg)`,
-              width: '50%',
-              height: '50%',
-              zIndex: 3,
-            }}
-          />
         </div>
       </div>
       <button
