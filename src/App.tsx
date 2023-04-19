@@ -38,11 +38,11 @@ const CompassCamera: React.FC = () => {
     canvas.width = videoRef.current?.videoWidth || 0;
     canvas.height = videoRef.current?.videoHeight || 0;
     const ctx = canvas.getContext('2d');
-    
+
     if (ctx) {
       // Draw the video frame
       ctx.drawImage(videoRef.current!, 0, 0, canvas.width, canvas.height);
-  
+
       // Get the current latitude and longitude
       let latitude = 0;
       let longitude = 0;
@@ -52,7 +52,7 @@ const CompassCamera: React.FC = () => {
           longitude = position.coords.longitude;
         });
       }
-  
+
       // Draw the compass and arrow
       const compass = new Image();
       compass.src = CompassImage;
@@ -60,14 +60,17 @@ const CompassCamera: React.FC = () => {
       const compassX = (canvas.width - compassSize) / 2;
       const compassY = (canvas.height - compassSize) / 2;
       compass.onload = () => {
-        // Rotate the compass based on the heading angle
+        // Determine the angle to rotate the compass based on the current heading
+        const compassRotation = (360 - heading) % 360;
+
+        // Rotate the canvas to adjust for device orientation and arrow orientation
         const orientation = window.screen.orientation?.angle || 0;
         ctx.translate(canvas.width / 2, canvas.height / 2);
-        ctx.rotate(((360 - heading + orientation) * Math.PI) / 180);
+        ctx.rotate(((compassRotation - orientation) * Math.PI) / 180);
         ctx.translate(-canvas.width / 2, -canvas.height / 2);
-        
+
         ctx.drawImage(compass, compassX, compassY, compassSize, compassSize);
-  
+
         const arrow = new Image();
         arrow.src = ArrowImage;
         const arrowSize = compassSize * 0.5;
@@ -78,9 +81,9 @@ const CompassCamera: React.FC = () => {
           ctx.translate(canvas.width / 2, canvas.height / 2);
           ctx.rotate(((360 - heading + orientation - 90) * Math.PI) / 180);
           ctx.translate(-canvas.width / 2, -canvas.height / 2);
-  
+
           ctx.drawImage(arrow, arrowX, arrowY, arrowSize, arrowSize);
-  
+
           // Draw the heading text and current location
           const headingText = `Heading: ${Math.round(heading)}°`;
           const locationText = `Latitude: ${latitude}, Longitude: ${longitude}`;
@@ -97,7 +100,7 @@ const CompassCamera: React.FC = () => {
           ctx.fillText(headingText, textX, textY);
           ctx.strokeText(locationText, textX, locationY);
           ctx.fillText(locationText, textX, locationY);
-  
+
           // Save the captured image
           const imageData = canvas.toDataURL('image/jpeg');
           const link = document.createElement('a');
@@ -108,7 +111,7 @@ const CompassCamera: React.FC = () => {
       };
     }
   };
-  
+
 
 
   useEffect(() => {
