@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import CompassImage from './assets/Windrose.svg';
+import CompassImage from './assets/compass_4.svg';
 
 const CompassCamera: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -42,6 +42,7 @@ const CompassCamera: React.FC = () => {
       // Draw the video frame
       ctx.drawImage(videoRef.current!, 0, 0, canvas.width, canvas.height);
 
+
       // Draw the compass
       const compass = new Image();
       compass.src = CompassImage;
@@ -57,6 +58,23 @@ const CompassCamera: React.FC = () => {
         ctx.rotate(compassRadians);
         ctx.translate(-compassX - compassSize / 2, -compassY - compassSize / 2);
         ctx.drawImage(compass, compassX, compassY, compassSize, compassSize);
+
+        // Draw the shape indicator
+        const shapeSize = compassSize / 8;
+        const shapeX = compassX + (compassSize - shapeSize) / 2;
+        const shapeY = compassY + shapeSize;
+        const shapeAngle = heading;
+        const shapeRadians = (shapeAngle * Math.PI) / 180;
+        ctx.translate(shapeX + shapeSize / 2, shapeY + shapeSize / 2);
+        ctx.rotate(shapeRadians);
+        ctx.translate(-shapeX - shapeSize / 2, -shapeY - shapeSize / 2);
+        ctx.beginPath();
+        ctx.moveTo(shapeX, shapeY);
+        ctx.lineTo(shapeX + shapeSize, shapeY);
+        ctx.lineTo(shapeX + shapeSize / 2, shapeY + shapeSize);
+        ctx.closePath();
+        ctx.fillStyle = 'red';
+        ctx.fill();
       };
     }
   };
@@ -136,7 +154,7 @@ const CompassCamera: React.FC = () => {
         <div style={{ fontSize: '24px', marginBottom: '8px' }}>
           Latitude: {latitude?.toFixed(6) || 'N/A'}, Longitude: {longitude?.toFixed(6) || 'N/A'}
         </div>
-        <div style={{ width: '250px', height: '250px', position: 'relative' }}>
+        <div style={{ width: '300px', height: '300px', position: 'relative' }}>
           <img
             src={CompassImage}
             alt="Compass"
