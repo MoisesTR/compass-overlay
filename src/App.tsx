@@ -169,7 +169,7 @@ const CompassCamera: React.FC = () => {
         <div style={{ fontSize: '24px', marginBottom: '8px' }}>
           Latitude: {latitude?.toFixed(6) || 'N/A'}, Longitude: {longitude?.toFixed(6) || 'N/A'}
         </div>
-        <div style={{ width: '150px', height: '150px', position: 'relative' }}>
+        <div style={{ width: '250px', height: '250px', position: 'relative' }}>
           <img
             src={CompassImage}
             alt="Compass"
