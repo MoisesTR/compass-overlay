@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
-import CompassImage from './assets/compass.svg';
+import CompassImage from './assets/compass_final.png';
+import ArrowImage from './assets/arrow.png';
 
 const CompassCamera: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -138,6 +139,20 @@ const CompassCamera: React.FC = () => {
           Latitude: {latitude?.toFixed(6) || 'N/A'}, Longitude: {longitude?.toFixed(6) || 'N/A'}
         </div>
         <div style={{ width: '250px', height: '250px', marginTop: '20px', position: 'relative' }}>
+          {/* your new image */}
+          <img
+            src={ArrowImage} // replace this with the path or URL to your image
+            alt="Arrow" // replace this with a description of your image
+            style={{
+              position: 'absolute',
+              top: '40%', // center vertically
+              left: '50%', // center horizontally
+              transform: `translate(-50%, -50%) rotate(${-heading}deg)`, // adjust for image size
+              width: '50px', // adjust these dimensions as needed
+              height: '50px', // adjust these dimensions as needed
+              zIndex: 2, // ensure this is above the compass
+            }}
+          />
           <img
             src={CompassImage}
             alt="Compass"
@@ -145,13 +160,12 @@ const CompassCamera: React.FC = () => {
               position: 'absolute',
               bottom: '20px',
               left: '50%',
-              transform: `translateX(-50%) rotate(${heading}deg)`,
+              transform: `translateX(-50%) rotate(${-90 + heading}deg)`,
               width: '250px',
               height: '250px',
               zIndex: 2,
             }}
           />
-
         </div>
       </div>
       <button
