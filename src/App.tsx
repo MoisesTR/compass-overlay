@@ -82,6 +82,7 @@ const CompassCamera: React.FC = () => {
     getLocation();
 
     const handleDeviceOrientation = (event: DeviceOrientationEvent) => {
+      console.log(`Absolute value`, event.absolute);
       if (event.alpha !== null) {
         setHeading(event.alpha);
       }
