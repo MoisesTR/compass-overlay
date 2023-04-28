@@ -8,7 +8,27 @@ const CompassCamera: React.FC = () => {
   const [zoom, setZoom] = useState<number>(1);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
+  const [oldAngle, setOldAngle] = useState<number>(0);
 
+  const normalizeAngle = (direction: any) => {
+    let newAngle = direction,
+      rot = oldAngle || 0,
+      ar = rot % 360;
+
+    while (newAngle < 0) { newAngle += 360; }
+    while (newAngle > 360) { newAngle -= 360; }
+    while (rot < 0) { rot += 360; }
+    while (rot > 360) { rot -= 360; }
+
+    if (ar < 0) { ar += 360; }
+    if (ar < 180 && newAngle > ar + 180) { rot -= 360; }
+    if (ar >= 180 && newAngle <= ar - 180) { rot += 360; }
+
+    rot += newAngle - ar;
+    setOldAngle(rot);
+
+    return rot;
+  }
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -82,12 +102,10 @@ const CompassCamera: React.FC = () => {
     getLocation();
 
     const handleDeviceOrientation = (event: DeviceOrientationEvent) => {
-      if (event.absolute) {
-        if (event.alpha !== null) {
-          setHeading(event.alpha);
-        }
-      } else {
-        console.log('Device does not provide absolute orientation data');
+      if (event.alpha !== null) {
+        setHeading(event.alpha);
+        const newAngle = normalizeAngle(event.alpha);
+        console.log(newAngle);
       }
     };
 
