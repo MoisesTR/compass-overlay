@@ -8,27 +8,6 @@ const CompassCamera: React.FC = () => {
   const [zoom, setZoom] = useState<number>(1);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-  const [oldAngle, setOldAngle] = useState<number>(0);
-
-  const normalizeAngle = (direction: any) => {
-    let newAngle = direction,
-      rot = oldAngle || 0,
-      ar = rot % 360;
-
-    while (newAngle < 0) { newAngle += 360; }
-    while (newAngle > 360) { newAngle -= 360; }
-    while (rot < 0) { rot += 360; }
-    while (rot > 360) { rot -= 360; }
-
-    if (ar < 0) { ar += 360; }
-    if (ar < 180 && newAngle > ar + 180) { rot -= 360; }
-    if (ar >= 180 && newAngle <= ar - 180) { rot += 360; }
-
-    rot += newAngle - ar;
-    setOldAngle(rot);
-
-    return rot;
-  }
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -104,8 +83,6 @@ const CompassCamera: React.FC = () => {
     const handleDeviceOrientation = (event: DeviceOrientationEvent) => {
       if (event.alpha !== null) {
         setHeading(event.alpha);
-        const newAngle = normalizeAngle(event.alpha);
-        console.log(newAngle);
       }
     };
 
@@ -161,18 +138,18 @@ const CompassCamera: React.FC = () => {
           Latitude: {latitude?.toFixed(6) || 'N/A'}, Longitude: {longitude?.toFixed(6) || 'N/A'}
         </div>
         <div style={{ width: '250px', height: '250px', marginTop: '20px', position: 'relative' }}>
-          {/* your new image */}
           <img
-            src={ArrowImage} // replace this with the path or URL to your image
-            alt="Arrow" // replace this with a description of your image
+            src={ArrowImage}
+            alt="Arrow"
             style={{
               position: 'absolute',
-              top: '40%', // center vertically
-              left: '50%', // center horizontally
-              transform: `translate(-50%, -50%) rotate(${-heading}deg)`, // adjust for image size
-              width: '50px', // adjust these dimensions as needed
-              height: '50px', // adjust these dimensions as needed
-              zIndex: 2, // ensure this is above the compass
+              top: '40%',
+              left: '50%',
+              transform: `translate(-50%, -50%) rotate(90deg)`,
+              transformOrigin: '50% 50%',
+              width: '50px',
+              height: '50px',
+              zIndex: 2,
             }}
           />
           <img
@@ -182,7 +159,8 @@ const CompassCamera: React.FC = () => {
               position: 'absolute',
               bottom: '20px',
               left: '50%',
-              transform: `translateX(-50%) rotate(${-90 + heading}deg)`,
+              transform: `translateX(-50%) rotate(90deg)`,
+              transformOrigin: '50% 50%',
               width: '250px',
               height: '250px',
               zIndex: 2,
