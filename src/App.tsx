@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import CompassImage from './assets/compass_final.png';
-import ArrowImage from './assets/arrow.png';
+import CompassImage from './assets/compass.svg';
 
 const CompassCamera: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
